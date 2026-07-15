@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+pdfplumber
+python-multipart
+jinja2
+google-genai
+flask
+flask-cors
