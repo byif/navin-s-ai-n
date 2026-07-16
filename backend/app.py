@@ -39,7 +39,7 @@ try:
     import numpy as np
     import cv2
     import dlib
-    from deepface import DeepFace
+    #from deepface import DeepFace
 except ImportError:
     np = None
     cv2 = None
@@ -109,14 +109,13 @@ async def startup_event():
 # === FastAPI Middleware ===
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "https://navin-s-ai.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
-
+templates = Jinja2Templates(directory="templates")
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok", "service": "navins-ai-backend"}
@@ -424,9 +423,17 @@ def is_valid_resume(text):
     text_lower = text.lower()
     return any(keyword in text_lower for keyword in resume_keywords)
 
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("upload.html", {"request": request})
+from fastapi.responses import JSONResponse
+
+@app.get("/")
+async def home():
+    return JSONResponse(
+        {
+            "status": "success",
+            "message": "HireSense AI Backend is running successfully.",
+            "docs": "/docs"
+        }
+    )
 
 @app.post("/upload")
 async def upload_resume(
